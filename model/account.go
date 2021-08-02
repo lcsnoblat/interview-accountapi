@@ -3,12 +3,16 @@
 // more information about fields.
 package account
 
-type Data struct {
+type RequestData struct {
+	RequestBody *AccountInfo `json:"data"`
+}
+
+type AccountInfo struct {
 	Attributes     *Attributes `json:"attributes,omitempty"`
 	ID             string      `json:"id,omitempty"`
-	OrganisationID string             `json:"organisation_id,omitempty"`
-	Type           string             `json:"type,omitempty"`
-	Version        *int64             `json:"version,omitempty"`
+	OrganisationID string      `json:"organisation_id,omitempty"`
+	Type           string      `json:"type,omitempty"`
+	Version        *int64      `json:"version,omitempty"`
 }
 
 type Attributes struct {
@@ -20,10 +24,10 @@ type Attributes struct {
 	BankIDCode              string   `json:"bank_id_code,omitempty"`
 	BaseCurrency            string   `json:"base_currency,omitempty"`
 	Bic                     string   `json:"bic,omitempty"`
-	Country                 *string  `json:"country,omitempty"`
+	Country                 *string  `json:"country,omitempty" binding:"required"`
 	Iban                    string   `json:"iban,omitempty"`
 	JointAccount            *bool    `json:"joint_account,omitempty"`
-	Name                    []string `json:"name,omitempty"`
+	Name                    []string `json:"name,omitempty" binding:"required"`
 	SecondaryIdentification string   `json:"secondary_identification,omitempty"`
 	Status                  *string  `json:"status,omitempty"`
 	Switched                *bool    `json:"switched,omitempty"`

@@ -10,30 +10,33 @@ import (
 	"os"
 )
 
-func BuildRequest(acc *account.Data) (*http.Request) {
+func buildAndMakeCreateAccountRequest(acc *account.RequestData) *http.Response {
 
-	httpposturl := "http://localhost:8080/v1/organisation/accounts"
-	payloadBuf := new(bytes.Buffer)
-	json.NewEncoder(payloadBuf).Encode(acc)
+	baseUrl := os.Getenv("BASE_URL")
+	httpposturl := baseUrl + "v1/organisation/accounts"
 
-	request, error := http.NewRequest("POST", httpposturl, payloadBuf)
-	request.Header.Set("Signature", os.Getenv("SIGNATURE"))
-	request.Header.Set("Authorization", os.Getenv("AUTHORIZATION_HEADER"))
-	request.Header.Set("Content-Type", "application/vnd.api+json; charset=UTF-8")
+	accountJson, err := json.Marshal(acc)
 
-	return request
-}
+	response, error := http.Post(httpposturl, "application/json", bytes.NewBuffer(accountJson))
 
-func NewAccount(acc *account.Data) (string, error) {
-	httpposturl := "http://localhost:8080/v1/organisation/accounts"
-	
-	client := &http.Client{}
-	response, error := client.Do(request)
-
-	if error != nil {
+	if err != nil {
 		panic(error)
 	}
-	defer response.Body.Close()
+
+	response.Header.Set("Signature", os.Getenv("SIGNATURE"))
+	response.Header.Set("Authorization", os.Getenv("AUTHORIZATION_HEADER"))
+	response.Header.Set("Content-Type", "application/json; charset=UTF-8")
+
+	return response
+}
+
+func NewAccount(acc *account.RequestData) (string, error) {
+
+	response := buildAndMakeCreateAccountRequest(acc)
+
+	if response.StatusCode == 409 {
+		return "", fmt.Errorf("account already exists")
+	}
 
 	fmt.Println("response Status:", response.Status)
 	fmt.Println("response Headers:", response.Header)
