@@ -1,7 +1,7 @@
 package main
 
 import (
-	create_account "form3/client"
+	clientservice "form3/client"
 	account "form3/model"
 )
 
@@ -21,5 +21,5 @@ func main() {
 		RequestBody: accData,
 	}
 
-	create_account.NewAccount(requestData)
+	clientservice.NewAccount(requestData)
 }

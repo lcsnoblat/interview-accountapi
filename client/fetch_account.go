@@ -1,8 +1,6 @@
 package client_service
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	account "form3/model"
 	"io/ioutil"
@@ -10,23 +8,21 @@ import (
 	"os"
 )
 
-func buildAndMakeCreateAccountRequest(acc *account.RequestData) *http.Response {
+func buildAndMakeFetchAccountRequest(accountId string) *http.Response {
 
 	baseUrl := os.Getenv("BASE_URL")
-	httpposturl := baseUrl + "v1/organisation/accounts"
+	httpgeturl := baseUrl + "v1/organisation/accounts/" + accountId
 
-	accountJson, err := json.Marshal(acc)
+	response, error := http.Get(httpgeturl)
 
-	response, error := http.Post(httpposturl, "application/json", bytes.NewBuffer(accountJson))
-
-	if err != nil {
+	if error != nil {
 		panic(error)
 	}
 
 	return response
 }
 
-func NewAccount(acc *account.RequestData) (string, error) {
+func FetchAccount(acc *account.RequestData) (string, error) {
 
 	response := buildAndMakeCreateAccountRequest(acc)
 
