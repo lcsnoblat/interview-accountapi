@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-func buildAndMakeDeleteAccountRequest(accountId string) *http.Response {
+func buildAndMakeAccountRequest(accountId string) *http.Response {
 
 	client := &http.Client{}
 	baseUrl := os.Getenv("BASE_URL")
